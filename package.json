@@ -1,6 +1,6 @@
 {
   "name": "jtoggle",
-  "version": "1.0.0",
+  "version": "1.1.1",
   "description": "Allows you to toggle control and shift for easier sprinting and sneaking",
   "main": "index.js",
   "scripts": {
