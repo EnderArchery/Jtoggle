@@ -1,5 +1,5 @@
 {
-  "name": "toggle",
+  "name": "jtoggle",
   "version": "1.0.0",
   "description": "Allows you to toggle control and shift for easier sprinting and sneaking",
   "main": "index.js",
