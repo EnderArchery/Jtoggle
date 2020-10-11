@@ -15,7 +15,7 @@ const triggerGroups = [
     ]
 ]
 
-const triggerSpeed = 100
+const triggerSpeed = 150
 
 iohook.on("keydown", (evt) => {
     let key = evt.keycode

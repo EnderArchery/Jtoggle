@@ -44,6 +44,9 @@ In order to unlock the key, just press it again.
           <li>
             Keys release on keydown (stops sneaking when you start sprinting instead of when you stop sprinting)
           </li>
+          <li>
+            Increased the toggle time limit by a bit
+          </li>
         </ul>
       </td>
     </tr>
