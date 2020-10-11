@@ -1,65 +1,103 @@
 const iohook = require("iohook")
 const robotjs = require("./node_modules/robotjs/index.js")
-const [down, up] = ["down", "up"]
-let awaitRobot = false
-let toggled = []
+const states = {down: "down", up: "up"}
+const keys = {29: "control", 42: "shift"}
+const awaitRobot = []
+const held = []
+const possibleTriggers =[]
+const triggered = []
 
-const toToggle = [29, 42]
+const triggerGroups = [
+    [
+        29,
+        42
+    ]
+]
 
-iohook.on("keyup", evt => {
-    if(awaitRobot){
-        awaitRobot = false
-    }else if(toToggle.includes(evt.keycode)){
-         toggle(evt.keycode)
+const triggerSpeed = 100
+
+iohook.on("keydown", (evt) => {
+    let key = evt.keycode
+    if(!held.includes(key)){
+        held.push(key)
+        if(!awaitRobot.length){
+            keyDownHandler(key)
+        }else{
+            removeKey(key, awaitRobot)
+        }
     }
 })
-iohook.start()
-writeToggled()
 
-function toggle(key){
-    let removed = []
-    toggled.forEach((key) => {
-        setKeyState(key, up)
-        removed.push(key)
-    })
-    if(!removed.includes(key)){
-        setKeyState(key, down)
+iohook.on("keyup", (evt) => {
+    let key = evt.keycode
+    if(held.includes(key)){
+        let i = held.indexOf(key)
+        held.splice(i, 1)
+        if(!awaitRobot.length){
+            keyUpHandler(key)
+        }else{
+            removeKey(key, awaitRobot)
+        }
     }
-    writeToggled()
+})
+
+iohook.start()
+writeTriggered()
+
+function removeKey(key, array){
+    let i = array.indexOf(key)
+    array.splice(i, 1)
 }
 
-async function setKeyState(key, state){
-    if(state == up){
-        awaitRobot = true
-        do{
-            i = toggled.indexOf(key)
-            toggled.splice(i, 1)
-        }while(i)
-    }else if(state == down){
-        toggled.push(key)
+function keyDownHandler(key){
+    possibleTriggers.push(key)
+    let timer = setTimeout(()=>{
+        removeKey(key, possibleTriggers)
+    }, triggerSpeed)
+}
+
+function keyUpHandler(key){
+    let removed = []
+    triggerGroups.forEach((group)=>{
+        if(group.includes(key)){
+            group.forEach((key)=>{
+                if(triggered.includes(key)){
+                    removed.push(key)
+                    setState(key, states.up)
+                }
+            })
+        }
+    })
+    if(triggerGroups.some(group=>group.includes(key))){
+        if(possibleTriggers.includes(key) && !removed.includes(key)){
+            setState(key, states.down)
+        }
+    }
+    writeTriggered()
+}
+
+function setState(key, state){
+    switch(state){
+        case states.down:
+            triggered.push(key)
+            awaitRobot.push(key)
+        break
+        case states.up:
+            removeKey(key, triggered)
+        break
     }
     robotjs.keyToggle(getKey(key), state)
 }
 
 function getKey(key){
-    switch(key){
-        case 29:
-            return "control"
-        break
-        case 42:
-            return "shift"
-        break
-        default:
-            return key
-        break
-    }
+    return keys[key] ? keys[key] : key
 }
 
-function writeToggled(){
+function writeTriggered(){
     process.stdout.cursorTo(0, 0, () => {
         process.stdout.clearScreenDown(()=>{
             console.log("Toggled: ")
-            toggled.forEach((key) => console.log(getKey(key)))
+            triggered.forEach((key) => console.log(getKey(key)))
         })
     })
 }
