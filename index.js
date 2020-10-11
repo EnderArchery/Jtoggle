@@ -19,7 +19,7 @@ const triggerSpeed = 150
 
 iohook.on("keydown", (evt) => {
     let key = evt.keycode
-    console.log(`pressed ${getKey(key)} while robot ${awaitRobot.includes(key)}`)
+    //console.log(`pressed ${getKey(key)} while robot ${awaitRobot.includes(key)}`)
         if(!awaitRobot.includes(key)){
             if(!held.includes(key)){
                 held.push(key)
@@ -32,7 +32,7 @@ iohook.on("keydown", (evt) => {
 
 iohook.on("keyup", (evt) => {
     let key = evt.keycode
-    console.log(`released ${getKey(key)} while robot ${awaitRobot.includes(key)}`)
+    //console.log(`released ${getKey(key)} while robot ${awaitRobot.includes(key)}`)
         if(!awaitRobot.includes(key)){
             if(held.includes(key)){
                 removeKey(key, held)
@@ -51,27 +51,15 @@ function keyDownHandler(key){
     let timer = setTimeout(function(){
         removeKey(key, possibleTriggers)
     }, triggerSpeed)
-    keyRelease(key)
+    processGroups(key, false)
 }
 
 function keyUpHandler(key){
-    if(keyRelease(key)){
-        if(possibleTriggers.includes(key) && !removed.includes(key)){
-            setState(key, states.down)
-        }
-    }
-    triggerGroups.forEach((group)=>{
-        if(group.includes(key)){
-            group.forEach((key)=>{
-                removeKey(key, removed)
-            })
-        }
-    })
-    //removed.splice(0, removed.length)
+    processGroups(key, true)
     writeTriggered()
 }
 
-function keyRelease(key){
+function processGroups(key, allowTrigger){
     let found = false
     triggerGroups.forEach((group)=>{
         if(group.includes(key)){
@@ -80,6 +68,11 @@ function keyRelease(key){
                 if(triggered.includes(key)){
                     removed.push(key)
                     setState(key, states.up)
+                }else if(allowTrigger){
+                    if(possibleTriggers.includes(key) && !removed.includes(key)){
+                        setState(key, states.down)
+                    }
+                    removeKey(key, removed)
                 }
             })
         }
@@ -113,12 +106,12 @@ function removeKey(key, array){
 }
 
 function writeTriggered(){
-    /*process.stdout.cursorTo(0, 0, () => {
+    process.stdout.cursorTo(0, 0, () => {
         process.stdout.clearScreenDown(()=>{
             console.log("Toggled: ")
             triggered.forEach((key) => console.log(getKey(key)))
         })
-    })*/
-    console.log("Toggled: ")
-    triggered.forEach((key) => console.log(getKey(key)))
+    })
+    //console.log("Toggled: ")
+    //triggered.forEach((key) => console.log(getKey(key)))
 }
