@@ -7,7 +7,7 @@ If you hold them down longer, it won't trigger. You should even be able to type 
 In order to unlock the key, just press it again.
 
 ### Latest Release
-#### [(1.1.0)](./Releases/Jtoggle.zip)
+#### [(1.1.1)](./Releases/Jtoggle.zip)
 
 ### Changelog
   <table>
@@ -46,6 +46,23 @@ In order to unlock the key, just press it again.
           </li>
           <li>
             Increased the toggle time limit by a bit
+          </li>
+        </ul>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="./Releases/Jtoggle_1.1.1.zip">
+            1.1.1
+        </a>
+      </td>
+      <td>
+        <ul>
+          <li>
+            Fixed sparsing out with lots inputs occur
+          </li>
+          <li>
+            Optimized Code by a lot (more reliable triggering timing)
           </li>
         </ul>
       </td>
