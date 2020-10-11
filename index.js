@@ -19,27 +19,28 @@ const triggerSpeed = 150
 
 iohook.on("keydown", (evt) => {
     let key = evt.keycode
-    if(!held.includes(key)){
-        held.push(key)
-        if(!awaitRobot.length){
-            keyDownHandler(key)
+    console.log(`pressed ${getKey(key)} while robot ${awaitRobot.includes(key)}`)
+        if(!awaitRobot.includes(key)){
+            if(!held.includes(key)){
+                held.push(key)
+                keyDownHandler(key)
+            }
         }else{
             removeKey(key, awaitRobot)
         }
-    }
 })
 
 iohook.on("keyup", (evt) => {
     let key = evt.keycode
-    if(held.includes(key)){
-        let i = held.indexOf(key)
-        held.splice(i, 1)
-        if(!awaitRobot.length){
-            keyUpHandler(key)
+    console.log(`released ${getKey(key)} while robot ${awaitRobot.includes(key)}`)
+        if(!awaitRobot.includes(key)){
+            if(held.includes(key)){
+                removeKey(key, held)
+                keyUpHandler(key)
+            }
         }else{
             removeKey(key, awaitRobot)
         }
-    }
 })
 
 iohook.start()
@@ -59,7 +60,14 @@ function keyUpHandler(key){
             setState(key, states.down)
         }
     }
-    removed.splice(0, removed.length)
+    triggerGroups.forEach((group)=>{
+        if(group.includes(key)){
+            group.forEach((key)=>{
+                removeKey(key, removed)
+            })
+        }
+    })
+    //removed.splice(0, removed.length)
     writeTriggered()
 }
 
@@ -80,15 +88,16 @@ function keyRelease(key){
 }
 
 function setState(key, state){
+    let isHeld = held.includes(key)
     switch(state){
         case states.down:
             triggered.push(key)
-            awaitRobot.push(key)
         break
         case states.up:
             removeKey(key, triggered)
         break
     }
+    awaitRobot.push(key)
     robotjs.keyToggle(getKey(key), state)
 }
 
@@ -98,14 +107,18 @@ function getKey(key){
 
 function removeKey(key, array){
     let i = array.indexOf(key)
-    array.splice(i, 1)
+    if(i>=0){
+        array.splice(i, 1)
+    }
 }
 
 function writeTriggered(){
-    process.stdout.cursorTo(0, 0, () => {
+    /*process.stdout.cursorTo(0, 0, () => {
         process.stdout.clearScreenDown(()=>{
             console.log("Toggled: ")
             triggered.forEach((key) => console.log(getKey(key)))
         })
-    })
+    })*/
+    console.log("Toggled: ")
+    triggered.forEach((key) => console.log(getKey(key)))
 }
