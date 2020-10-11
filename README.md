@@ -7,7 +7,7 @@ If you hold them down longer, it won't trigger. You should even be able to type 
 In order to unlock the key, just press it again.
 
 ### Latest Release
-#### [(1.0.0)](./Releases/Jtoggle.zip)
+#### [(1.1.0)](./Releases/Jtoggle.zip)
 
 ### Changelog
   <table>
@@ -29,6 +29,20 @@ In order to unlock the key, just press it again.
         <ul>
           <li>
             Works now
+          </li>
+        </ul>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="./Releases/Jtoggle_1.1.0.zip">
+            1.1.0
+        </a>
+      </td>
+      <td>
+        <ul>
+          <li>
+            Keys release on keydown (stops sneaking when you start sprinting instead of when you stop sprinting)
           </li>
         </ul>
       </td>

@@ -6,6 +6,7 @@ const awaitRobot = []
 const held = []
 const possibleTriggers =[]
 const triggered = []
+const removed = []
 
 const triggerGroups = [
     [
@@ -44,22 +45,29 @@ iohook.on("keyup", (evt) => {
 iohook.start()
 writeTriggered()
 
-function removeKey(key, array){
-    let i = array.indexOf(key)
-    array.splice(i, 1)
-}
-
 function keyDownHandler(key){
     possibleTriggers.push(key)
-    let timer = setTimeout(()=>{
+    let timer = setTimeout(function(){
         removeKey(key, possibleTriggers)
     }, triggerSpeed)
+    keyRelease(key)
 }
 
 function keyUpHandler(key){
-    let removed = []
+    if(keyRelease(key)){
+        if(possibleTriggers.includes(key) && !removed.includes(key)){
+            setState(key, states.down)
+        }
+    }
+    removed.splice(0, removed.length)
+    writeTriggered()
+}
+
+function keyRelease(key){
+    let found = false
     triggerGroups.forEach((group)=>{
         if(group.includes(key)){
+            found = true
             group.forEach((key)=>{
                 if(triggered.includes(key)){
                     removed.push(key)
@@ -68,12 +76,7 @@ function keyUpHandler(key){
             })
         }
     })
-    if(triggerGroups.some(group=>group.includes(key))){
-        if(possibleTriggers.includes(key) && !removed.includes(key)){
-            setState(key, states.down)
-        }
-    }
-    writeTriggered()
+    return found
 }
 
 function setState(key, state){
@@ -91,6 +94,11 @@ function setState(key, state){
 
 function getKey(key){
     return keys[key] ? keys[key] : key
+}
+
+function removeKey(key, array){
+    let i = array.indexOf(key)
+    array.splice(i, 1)
 }
 
 function writeTriggered(){
