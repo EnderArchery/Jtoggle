@@ -84,4 +84,18 @@ In order to unlock the key, just press it again.
         </ul>
       </td>
     </tr>
+    <tr>
+      <td>
+        <a href="./Releases/Jtoggle_1.1.3.zip">
+            1.1.3
+        </a>
+      </td>
+      <td>
+        <ul>
+          <li>
+            Fixed not reacting after pressing both keys at the same time
+          </li>
+        </ul>
+      </td>
+    </tr>
   </table>

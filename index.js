@@ -23,11 +23,11 @@ iohook.on("keydown", (evt) => {
     if(!awaitRobot.includes(key)){
         if(!held.includes(key)){
             held.push(key)
-                if(!processing){
-                    processing = true
-                    keyDownHandler(key)
-                    processing = false
-                }
+            if(!processing){
+                processing = true
+                keyDownHandler(key)
+                processing = false
+            }
         }
     }else{
         removeKey(key, awaitRobot)
@@ -39,11 +39,11 @@ iohook.on("keyup", (evt) => {
     if(!awaitRobot.includes(key)){
         if(held.includes(key)){
             removeKey(key, held)
-                if(!processing){
-                    processing = true
-                    keyUpHandler(key)
-                    processing = false
-                }
+            if(!processing){
+                processing = true
+                keyUpHandler(key)
+                processing = false
+            }
         }
     }else{
         removeKey(key, awaitRobot)
@@ -67,7 +67,6 @@ function keyUpHandler(key){
 }
 
 function processGroups(key, allowTrigger){
-    let toSet = []
     let found = []
     let done = false
     triggerGroups.forEach((group)=>{
@@ -83,8 +82,9 @@ function processGroups(key, allowTrigger){
                             done = true
                             setState(key, states.down)
                         }
+                    }
+                    if(allowTrigger){
                         removeKey(key, removed)
-                        removeKey(key, possibleTriggers)
                     }
                 }
             })
@@ -118,10 +118,10 @@ function removeKey(key, array){
 }
 
 function writeTriggered(){
-    process.stdout.cursorTo(0, 0, ()=>{
-        process.stdout.clearScreenDown(()=>{
+    //process.stdout.cursorTo(0, 0, ()=>{
+    //    process.stdout.clearScreenDown(()=>{
             console.log("Toggled: ")
             triggered.forEach((key) => console.log(getKey(key)))
-        })
-    })
+    //    })
+    //})
 }
