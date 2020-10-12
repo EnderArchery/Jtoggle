@@ -79,7 +79,7 @@ In order to unlock the key, just press it again.
             Fixed being able to trigger both keys at the same time and then not reacting next use
           </li>
           <li>
-            Increased compatibillity for mutliple key groups (for potential later use)
+            Increased compatibility for multiple key groups (for potential later use)
           </li>
         </ul>
       </td>
