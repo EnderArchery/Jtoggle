@@ -7,7 +7,7 @@ If you hold them down longer, it won't trigger. You should even be able to type 
 In order to unlock the key, just press it again.
 
 ### Latest Release
-#### [(1.1.1)](./Releases/Jtoggle.zip)
+#### [(1.1.2)](./Releases/Jtoggle.zip)
 
 ### Changelog
   <table>
@@ -63,6 +63,23 @@ In order to unlock the key, just press it again.
           </li>
           <li>
             Optimized Code by a lot (more reliable triggering timing)
+          </li>
+        </ul>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="./Releases/Jtoggle_1.1.2.zip">
+            1.1.2
+        </a>
+      </td>
+      <td>
+        <ul>
+          <li>
+            Fixed being able to trigger both keys at the same time and then not reacting next use
+          </li>
+          <li>
+            Increased compatibillity for mutliple key groups (for potential later use)
           </li>
         </ul>
       </td>

@@ -4,9 +4,10 @@ const states = {down: "down", up: "up"}
 const keys = {29: "control", 42: "shift"}
 const awaitRobot = []
 const held = []
-const possibleTriggers =[]
+const possibleTriggers = []
 const triggered = []
 const removed = []
+let processing = false
 
 const triggerGroups = [
     [
@@ -19,28 +20,34 @@ const triggerSpeed = 150
 
 iohook.on("keydown", (evt) => {
     let key = evt.keycode
-    //console.log(`pressed ${getKey(key)} while robot ${awaitRobot.includes(key)}`)
-        if(!awaitRobot.includes(key)){
-            if(!held.includes(key)){
-                held.push(key)
-                keyDownHandler(key)
-            }
-        }else{
-            removeKey(key, awaitRobot)
+    if(!awaitRobot.includes(key)){
+        if(!held.includes(key)){
+            held.push(key)
+                if(!processing){
+                    processing = true
+                    keyDownHandler(key)
+                    processing = false
+                }
         }
+    }else{
+        removeKey(key, awaitRobot)
+    }
 })
 
 iohook.on("keyup", (evt) => {
     let key = evt.keycode
-    //console.log(`released ${getKey(key)} while robot ${awaitRobot.includes(key)}`)
-        if(!awaitRobot.includes(key)){
-            if(held.includes(key)){
-                removeKey(key, held)
-                keyUpHandler(key)
-            }
-        }else{
-            removeKey(key, awaitRobot)
+    if(!awaitRobot.includes(key)){
+        if(held.includes(key)){
+            removeKey(key, held)
+                if(!processing){
+                    processing = true
+                    keyUpHandler(key)
+                    processing = false
+                }
         }
+    }else{
+        removeKey(key, awaitRobot)
+    }
 })
 
 iohook.start()
@@ -60,24 +67,29 @@ function keyUpHandler(key){
 }
 
 function processGroups(key, allowTrigger){
-    let found = false
+    let toSet = []
+    let found = []
+    let done = false
     triggerGroups.forEach((group)=>{
         if(group.includes(key)){
-            found = true
             group.forEach((key)=>{
-                if(triggered.includes(key)){
-                    removed.push(key)
-                    setState(key, states.up)
-                }else if(allowTrigger){
-                    if(possibleTriggers.includes(key) && !removed.includes(key)){
-                        setState(key, states.down)
+                if(!found.includes(key)){
+                    found.push(key)
+                    if(triggered.includes(key)){
+                        removed.push(key)
+                        setState(key, states.up)
+                    }else if(allowTrigger){
+                        if(possibleTriggers.includes(key) && !removed.includes(key) && !done){
+                            done = true
+                            setState(key, states.down)
+                        }
+                        removeKey(key, removed)
+                        removeKey(key, possibleTriggers)
                     }
-                    removeKey(key, removed)
                 }
             })
         }
     })
-    return found
 }
 
 function setState(key, state){
@@ -100,18 +112,16 @@ function getKey(key){
 
 function removeKey(key, array){
     let i = array.indexOf(key)
-    if(i>=0){
+    if(i >= 0){
         array.splice(i, 1)
     }
 }
 
 function writeTriggered(){
-    process.stdout.cursorTo(0, 0, () => {
+    process.stdout.cursorTo(0, 0, ()=>{
         process.stdout.clearScreenDown(()=>{
             console.log("Toggled: ")
             triggered.forEach((key) => console.log(getKey(key)))
         })
     })
-    //console.log("Toggled: ")
-    //triggered.forEach((key) => console.log(getKey(key)))
 }
