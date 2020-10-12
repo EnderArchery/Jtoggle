@@ -118,10 +118,10 @@ function removeKey(key, array){
 }
 
 function writeTriggered(){
-    //process.stdout.cursorTo(0, 0, ()=>{
-    //    process.stdout.clearScreenDown(()=>{
+    process.stdout.cursorTo(0, 0, ()=>{
+        process.stdout.clearScreenDown(()=>{
             console.log("Toggled: ")
             triggered.forEach((key) => console.log(getKey(key)))
-    //    })
-    //})
+        })
+    })
 }
